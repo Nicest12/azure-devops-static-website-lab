@@ -1,0 +1,26 @@
+trigger:
+- main
+
+variables:
+  deploy_path: "/var/www/html"
+
+pool:
+  name: SelfHostedPool
+
+steps:
+
+- checkout: self
+
+- task: CopyFilesOverSSH@0
+  inputs:
+    sshEndpoint: 'ubuntu-nginx-ssh'
+    sourceFolder: '$(System.DefaultWorkingDirectory)'
+    contents: '**'
+    targetFolder: '$(deploy_path)'
+
+- task: SSH@0
+  inputs:
+    sshEndpoint: 'ubuntu-nginx-ssh'
+    runOptions: 'commands'
+    commands: |
+      ls /var/www/html
